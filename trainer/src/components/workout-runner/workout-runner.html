@@ -13,7 +13,15 @@
                         [ngStyle]="{'width':(exerciseRunningDuration/currentExercise.duration) * 100 + '%'}">
                     </div>
                 </div>
-                <h1>Time Remaining: {{currentExercise.duration-exerciseRunningDuration}}</h1>
+                <div class="row">
+                    <h3 class="col-sm-6 text-left">Time Remaining:
+                        <strong>{{currentExercise.duration-exerciseRunningDuration}}</strong>
+                    </h3>
+                    <h3 class="col-sm-6 text-right" *ngIf="currentExercise.exercise.name=='rest'">Next up:
+                        <strong>{{workoutPlan.exercises[CurrentExerciseIndex + 1].exercise.title}}</strong>
+                    </h3>
+                </div>
+                <!-- <h1>Time Remaining: {{currentExercise.duration-exerciseRunningDuration}}</h1> -->
             </div>
         </div>
     </div>
