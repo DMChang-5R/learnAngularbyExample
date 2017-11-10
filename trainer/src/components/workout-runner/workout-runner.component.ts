@@ -1,12 +1,9 @@
-import {Component,OnInit} from '@angular/core';
-import {WorkoutPlan, ExercisePlan, Exercise} from './model'
+import { Component, OnInit } from '@angular/core';
+import { WorkoutPlan, ExercisePlan, Exercise } from './model'
 
 @Component({
   selector: 'workout-runner',
-  template: `
-    <pre>Current Exercise: {{currentExercise | json}}</pre>
-    <pre>Time Left: {{currentExercise.duration-exerciseRunningDuration}}</pre>
-  `
+  templateUrl: '/src/components/workout-runner/workout-runner.html'
 })
 export class WorkoutRunnerComponent implements OnInit {
   workoutPlan: WorkoutPlan;
@@ -15,6 +12,7 @@ export class WorkoutRunnerComponent implements OnInit {
   currentExerciseIndex: number;
   currentExercise: ExercisePlan;
   exerciseRunningDuration: number;
+  exerciseTrackingInterval: number;
 
   constructor() {
     this.workoutPlan = this.buildWorkout();
@@ -33,9 +31,14 @@ export class WorkoutRunnerComponent implements OnInit {
   startExercise(exercisePlan: ExercisePlan) {
     this.currentExercise = exercisePlan;
     this.exerciseRunningDuration = 0;
-    let intervalId = setInterval(() => {
-      if (this.exerciseRunningDuration >= this.currentExercise.duration) {
-        clearInterval(intervalId);
+    let intervalId = this.startExerciseTimeTracking();
+  }
+
+  startExerciseTimeTracking() {
+    this.exerciseTrackingInterval = setInterval(() => {
+      if (this.exerciseRunningDuration >=
+        this.currentExercise.duration) {
+        clearInterval(this.exerciseTrackingInterval);
         let next: ExercisePlan = this.getNextExercise();
         if (next) {
           if (next !== this.restExercise) {
@@ -46,10 +49,10 @@ export class WorkoutRunnerComponent implements OnInit {
         else {
           console.log("Workout complete!");
         }
+        return;
       }
-      else {
-        this.exerciseRunningDuration++;
-      }
+      ++this.exerciseRunningDuration;
+      --this.workoutTimeRemaining;
     }, 1000);
   }
 
